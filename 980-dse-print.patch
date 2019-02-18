@@ -1,0 +1,19 @@
+--- a/gcc/tree-ssa-dse.c
++++ b/gcc/tree-ssa-dse.c
+@@ -742,7 +742,15 @@ dse_dom_walker::dse_optimize_stmt (gimpl
+ 		}
+
+ 	      if (store_status == DSE_STORE_DEAD)
+-		delete_dead_call (gsi);
++{
++if (DECL_FUNCTION_CODE (gimple_call_fndecl (stmt)) == BUILT_IN_MEMSET)
++{
++char const *file = gimple_filename(stmt);
++int line_no = gimple_lineno(stmt);
++fprintf(stderr, "%s:%d: optimized out memset\n", file, line_no);
++}
++delete_dead_call (gsi);
++}
+ 	      return;
+ 	    }
+
